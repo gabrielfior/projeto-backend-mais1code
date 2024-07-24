@@ -1,10 +1,11 @@
 import sqlmodel
 from sqlmodel import SQLModel, Field, Session
+from decimal import Decimal
 
 
 class Item(SQLModel, table=True):
   id: int | None = Field(default=None, primary_key=True)
-  preco: float # ToDo - Mudar este tipo para Decimal (apenas 2 casas decimais)
+  preco: Decimal = Field(max_digits=6, decimal_places=2)
   cor: str
   qtde_estoque: int
   descricao: str
