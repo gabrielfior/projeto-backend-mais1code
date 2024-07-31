@@ -1,13 +1,13 @@
+import uvicorn
+from sqlalchemy.pool import StaticPool
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import JSONResponse
 from sqlmodel import Field, Session, SQLModel, create_engine, select
+
 from modelos.modelos import Item
 
-# sqlite_file_name = "database.db"
-# sqlite_url = f"sqlite:///{sqlite_file_name}"
-
 connect_args = {"check_same_thread": False}
-# engine = create_engine(sqlite_url, echo=True, connect_args=connect_args)
-engine = create_engine('sqlite://', echo=True, connect_args=connect_args)
+engine = create_engine('sqlite://', echo=True, connect_args=connect_args, poolclass=StaticPool)
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
@@ -23,9 +23,8 @@ def create_item(item: Item):
     with Session(engine) as session:
         session.add(item)
         session.commit()
-        session.refresh(item)
 
-        return item
+        return JSONResponse(content=None, status_code=201)
 
 @app.get("/")
 def read_items():
@@ -34,7 +33,7 @@ def read_items():
 
         return items
     
-@app.get("/items/{item_id}", """ response_model=HeroPublic """)
+@app.get("/items/{item_id}")
 def read_item(item_id: int):
     with Session(engine) as session:
         item = session.get(Item, item_id)
@@ -44,8 +43,7 @@ def read_item(item_id: int):
         
         return item
 
-
-@app.patch("/items/{item_id}", """ response_model=HeroPublic """)
+@app.patch("/items/{item_id}")
 def update_hero(item_id: int, item: Item):
     with Session(engine) as session:
         db_item = session.get(Item, item_id)
@@ -74,3 +72,6 @@ def delete_item(item_id: int):
         session.commit()
 
         return {"ok": True}
+    
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000, debug=True)
