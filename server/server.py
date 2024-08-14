@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 from modelos.modelos import Item
+from modelos.modelos import Vendedor, AvaliacaoVendedor
 
 connect_args = {"check_same_thread": False}
 engine = create_engine('sqlite://', echo=True, connect_args=connect_args, poolclass=StaticPool)

@@ -1,6 +1,7 @@
 import sqlmodel
 from sqlmodel import SQLModel, Field, Session
 from decimal import Decimal
+from datetime import datetime
 
 
 class Item(SQLModel, table=True):
@@ -11,3 +12,20 @@ class Item(SQLModel, table=True):
   descricao: str
   imagem: str
   ativo: bool = True
+
+class Vendedor(SQLModel, table=True):
+  id: int | None = Field(default=None, primary_key=True)
+  nome: str
+  email: str
+  telefone: int
+  pais: str
+  cidade: str
+  estado: str
+  ativo: bool = True
+
+class AvaliacaoVendedor(SQLModel, table=True):
+  id: int | None = Field(default=None, primary_key=True)
+  imagem: str
+  comentario: str
+  nota: int
+  criado_em: datetime
