@@ -14,7 +14,7 @@ class Item(SQLModel, table=True):
   imagem: str
   ativo: bool = True
   
-  produto: list["AvaliacaoItem"] = Relationship(back_populates="item")
+  avaliacoes: list["AvaliacaoItem"] = Relationship(back_populates="item")
   
 
 class Vendedor(SQLModel, table=True):
@@ -44,5 +44,5 @@ class AvaliacaoItem(SQLModel, table=True):
   criado_em: datetime
 
   item_id: int | None = Field(default=None, foreign_key="item.id")
-  item: Item | None = Relationship(back_populates="item")
+  item: Item | None = Relationship(back_populates="avaliacoes")
 
