@@ -39,3 +39,12 @@ git push <SEU_NOME>
 - Crie uma Pull Request (PR) usando o site do Github.
   - Navegue para https://github.com/gabrielfior/projeto-backend-mais1code e voce ja deve encontrar um pop-up sugerindo a criacao do PR.
   - Apos cria-lo, avise no grupo de Whatsapp que um PR foi criado. O PR sera revisado por um administrador.
+
+## Como inicializar o backend
+
+- No terminal, navegue para o root do repositorio (onde o arquivo `requirements.txt` esta localizado)
+- Execute o comando abaixo
+```
+python -m server.server
+```
+- Abra o link a seguir no seu navegador, onde os endpoints estao disponiveis - http://localhost:8000/docs
