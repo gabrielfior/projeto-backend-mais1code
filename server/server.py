@@ -3,9 +3,9 @@ from sqlalchemy.pool import StaticPool
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from sqlmodel import Field, Session, SQLModel, create_engine, select
-
-
+from fastapi.middleware.cors import CORSMiddleware
 from modelos.modelos import Item,Vendedor, AvaliacaoVendedor
+
 
 connect_args = {"check_same_thread": False}
 engine = create_engine('sqlite://', echo=True, connect_args=connect_args, poolclass=StaticPool)
@@ -14,6 +14,17 @@ def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
 
 app = FastAPI()
+
+origins = ["http://localhost:8000"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["POST", "GET"],
+	allow_headers=["*"],
+    max_age=3600,
+)
 
 @app.on_event("startup")
 def on_startup():
@@ -73,6 +84,7 @@ def delete_item(item_id: int):
         session.commit()
 
         return {"ok": True}
-    
+
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
