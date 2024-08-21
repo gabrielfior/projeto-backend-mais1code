@@ -3,20 +3,20 @@ from sqlalchemy.pool import StaticPool
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from sqlmodel import Field, Session, SQLModel, create_engine, select
-from fastapi.middleware.cors import CORSMiddleware
+
 from modelos.modelos import Item,Vendedor, AvaliacaoVendedor
+from fastapi.middleware.cors import CORSMiddleware
 
 
 connect_args = {"check_same_thread": False}
-engine = create_engine('sqlite://', echo=True, connect_args=connect_args, poolclass=StaticPool)
+engine = create_engine('sqlite:///file1.db', echo=True, connect_args=connect_args, poolclass=StaticPool)
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
 
 app = FastAPI()
 
-origins = ["http://localhost:8000"]
-
+# Observe que CORS apenas eh retornado quando os Headers do requerimento GET incluem "Origin".
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
