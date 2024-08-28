@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 connect_args = {"check_same_thread": False}
-engine = create_engine('sqlite:///file1.db', echo=True, connect_args=connect_args, poolclass=StaticPool)
+engine = create_engine('sqlite://', echo=True, connect_args=connect_args, poolclass=StaticPool)
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
@@ -84,7 +84,6 @@ def delete_item(item_id: int):
         session.commit()
 
         return {"ok": True}
-
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
