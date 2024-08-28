@@ -86,4 +86,6 @@ def delete_item(item_id: int):
         return {"ok": True}
 
 if __name__ == "__main__":
+    import sys
+    sys.path.insert(0, "/c/Users/Dilson/projeto-backend-mais1code")
     uvicorn.run(app, host="0.0.0.0", port=8000)
