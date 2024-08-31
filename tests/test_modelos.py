@@ -5,6 +5,7 @@ sys.path.append("./modelos")
 
 from modelos import Item, AvaliacaoItem, Vendedor, AvaliacaoVendedor
 from sqlmodel import Field, Session, SQLModel, create_engine, select
+
 def test_modelo():
     novo_item = Item(descricao = "sorvete", preco= Decimal(2.134))
     print(novo_item)
