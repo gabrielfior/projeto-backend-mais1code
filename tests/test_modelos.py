@@ -27,10 +27,10 @@ def test_avaliacao_item():
     #qtde_estoque: int
     #descricao: str 
     #imagem: str
-    avaliacaoum = AvaliacaoItem(note = "12", imagem_url = "abc", 
+    avaliacaoum = AvaliacaoItem(nota = "12", imagem_url = "abc", 
     video_url = "url", comentario = "like", localizacao = "cep", criado_em = datetime.datetime.now())
 
-    avaliacaodois = AvaliacaoItem(note = "12", imagem_url = "abc", video_url = "url", comentario = "like", localizacao = "cep", criado_em = datetime.datetime.now())
+    avaliacaodois = AvaliacaoItem(nota = "12", imagem_url = "abc", video_url = "url", comentario = "like", localizacao = "cep", criado_em = datetime.datetime.now())
     engine = create_engine('sqlite://', echo=True)
     SQLModel.metadata.create_all(engine)
 
@@ -50,7 +50,7 @@ def test_avaliacao_item():
 def test_avaliacao_vendedor():
     novo_vendedor = Vendedor(nome = "Dilson", email = "123", telefone = "55", pais = "BR", cidade = "ssa", estado = "ba")
 
-    avaliacaovendum = AvaliacaoVendedor(nome = "ilson", imagem = "URL", comentario = "ABC", note = "12", criado_em = datetime.datetime.now())
+    avaliacaovendum = AvaliacaoVendedor(imagem = "URL", comentario = "ABC", nota = "12", criado_em = datetime.datetime.now())
     engine = create_engine('sqlite://', echo=True)
     SQLModel.metadata.create_all(engine)
 
