@@ -26,6 +26,9 @@ class Vendedor(SQLModel, table=True):
   cidade: str
   estado: str
   ativo: bool = True
+  
+  avaliacoes: list["AvaliacaoVendedor"] = Relationship(back_populates="vendedor")
+
 
 class AvaliacaoVendedor(SQLModel, table=True):
   id: int | None = Field(default=None, primary_key=True)
@@ -33,6 +36,10 @@ class AvaliacaoVendedor(SQLModel, table=True):
   comentario: str
   nota: int
   criado_em: datetime
+
+  vendedor_id: int | None = Field(default=None, foreign_key="vendedor.id")
+  vendedor: Vendedor | None = Relationship(back_populates="avaliacoes")
+
 
 class AvaliacaoItem(SQLModel, table=True):
   id: int | None = Field(default=None, primary_key=True)
