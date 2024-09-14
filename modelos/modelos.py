@@ -48,7 +48,7 @@ class AvaliacaoItem(SQLModel, table=True):
   comentario: str
   nota: int
   localizacao: str
-  criado_em: datetime
+  criado_em: datetime = Field(default_factory=datetime.utcnow)
 
   item_id: int | None = Field(default=None, foreign_key="item.id")
   item: Item | None = Relationship(back_populates="avaliacoes")

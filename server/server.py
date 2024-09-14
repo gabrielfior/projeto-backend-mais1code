@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 
-from modelos.modelos import Item,Vendedor, AvaliacaoVendedor
+from modelos.modelos import Item,AvaliacaoItem, Vendedor, AvaliacaoVendedor
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -30,6 +30,13 @@ app.add_middleware(
 def on_startup():
     create_db_and_tables()
 
+@app.get("/")
+def read_items():
+    with Session(engine) as session:
+        items = session.exec(select(Item)).all()
+
+        return items
+
 @app.post("/items/")
 def create_item(item: Item):
     with Session(engine) as session:
@@ -38,13 +45,6 @@ def create_item(item: Item):
 
         return JSONResponse(content=None, status_code=201)
 
-@app.get("/")
-def read_items():
-    with Session(engine) as session:
-        items = session.exec(select(Item)).all()
-
-        return items
-    
 @app.get("/items/{item_id}")
 def read_item(item_id: int):
     with Session(engine) as session:
@@ -56,7 +56,7 @@ def read_item(item_id: int):
         return item
 
 @app.patch("/items/{item_id}")
-def update_hero(item_id: int, item: Item):
+def update_item(item_id: int, item: Item):
     with Session(engine) as session:
         db_item = session.get(Item, item_id)
 
@@ -84,6 +84,66 @@ def delete_item(item_id: int):
         session.commit()
 
         return {"ok": True}
+    
+#endpoints avaliacao produto
+#feitos os endpoints (3= get; 4= patch; 5= delete)
+
+@app.get("/avaliacao_produtos")
+def read_avaliacao_produtos():
+    with Session(engine) as session:
+        avaliacao_produtos = session.exec(select(AvaliacaoItem)).all()
+
+        return avaliacao_produtos
+    
+@app.post("/avaliacao_produtos")
+def create_avaliacao_produtos(avaliacao_produto: AvaliacaoItem):
+    with Session(engine) as session:
+        session.add(avaliacao_produto)
+        session.commit()
+
+        return JSONResponse(content=None, status_code=201)
+
+@app.get("/avaliacao_produtos/{avaliacao_produto_id}")
+def read_avaliacao_produtos(avaliacao_produto_id: int):
+    with Session(engine) as session:
+        avaliacao_produto = session.get(AvaliacaoItem, avaliacao_produto_id)
+
+        if not avaliacao_produto:
+            raise HTTPException(status_code=404, detail="Avaliacao do Item not found")
+        
+        return avaliacao_produto
+    
+
+@app.patch("/avaliacao_produtos/{avaliacao_produto_id}")
+def update_avaliacao_produtos(avaliacao_produto_id: int, avaliacao_produto: AvaliacaoItem):
+    with Session(engine) as session:
+        db_avaliacao_produto = session.get(AvaliacaoItem, avaliacao_produto_id)
+
+        if not db_avaliacao_produto:
+            raise HTTPException(status_code=404, detail="Avaliacao do Item not found")
+        
+        avaliacao_produto_data = avaliacao_produto.model_dump(exclude_unset=True)
+        db_avaliacao_produto.sqlmodel_update(avaliacao_produto_data)
+
+        session.add(db_avaliacao_produto)
+        session.commit()
+        session.refresh(db_avaliacao_produto)
+
+        return db_avaliacao_produto
+
+@app.delete("/avaliacao_produtos/{avaliacao_produto_id}")
+def delete_avaliacao_produtos(avaliacao_produto_id: int):
+    with Session(engine) as session:
+        avaliacao_produto = session.get(AvaliacaoItem, avaliacao_produto_id)
+
+        if not avaliacao_produto:
+            raise HTTPException(status_code=404, detail="Avaliacao do Item not found")
+        
+        session.delete(avaliacao_produto)
+        session.commit()
+
+        return {"ok": True}
+
 
 if __name__ == "__main__":
     import sys
