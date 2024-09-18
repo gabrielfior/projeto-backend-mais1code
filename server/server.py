@@ -73,7 +73,7 @@ def update_item(item_id: int, item: Item):
         return db_item
 
 @app.delete("/items/{item_id}")
-def delete_item(item_id: int):
+def delete_items(item_id: int):
     with Session(engine) as session:
         item = session.get(Item, item_id)
 
@@ -88,58 +88,58 @@ def delete_item(item_id: int):
 #endpoints avaliacao produto
 #feitos os endpoints (3= get; 4= patch; 5= delete)
 
-@app.get("/avaliacao_produtos")
-def read_avaliacao_produtos():
+@app.get("/avaliacao_itens")
+def read_avaliacao_itens():
     with Session(engine) as session:
-        avaliacao_produtos = session.exec(select(AvaliacaoItem)).all()
+        avaliacao_item = session.exec(select(AvaliacaoItem)).all()
 
-        return avaliacao_produtos
+        return avaliacao_item
     
-@app.post("/avaliacao_produtos")
-def create_avaliacao_produtos(avaliacao_produto: AvaliacaoItem):
+@app.post("/avaliacao_itens")
+def create_avaliacao_itens(avaliacao_itens: AvaliacaoItem):
     with Session(engine) as session:
-        session.add(avaliacao_produto)
+        session.add(avaliacao_itens)
         session.commit()
 
         return JSONResponse(content=None, status_code=201)
 
-@app.get("/avaliacao_produtos/{avaliacao_produto_id}")
-def read_avaliacao_produtos(avaliacao_produto_id: int):
+@app.get("/avaliacao_itens/{avaliacao_item_id}")
+def read_avaliacao_itens(avaliacao_item_id: int):
     with Session(engine) as session:
-        avaliacao_produto = session.get(AvaliacaoItem, avaliacao_produto_id)
+        avaliacao_item = session.get(AvaliacaoItem, avaliacao_item_id)
 
-        if not avaliacao_produto:
+        if not avaliacao_item:
             raise HTTPException(status_code=404, detail="Avaliacao do Item not found")
         
-        return avaliacao_produto
+        return avaliacao_item
     
 
-@app.patch("/avaliacao_produtos/{avaliacao_produto_id}")
-def update_avaliacao_produtos(avaliacao_produto_id: int, avaliacao_produto: AvaliacaoItem):
+@app.patch("/avaliacao_itens/{avaliacao_item_id}")
+def update_avaliacao_itens(avaliacao_item_id: int, avaliacao_item: AvaliacaoItem):
     with Session(engine) as session:
-        db_avaliacao_produto = session.get(AvaliacaoItem, avaliacao_produto_id)
+        db_avaliacao_item = session.get(AvaliacaoItem, avaliacao_item_id)
 
-        if not db_avaliacao_produto:
+        if not db_avaliacao_item:
             raise HTTPException(status_code=404, detail="Avaliacao do Item not found")
         
-        avaliacao_produto_data = avaliacao_produto.model_dump(exclude_unset=True)
-        db_avaliacao_produto.sqlmodel_update(avaliacao_produto_data)
+        avaliacao_itens_data = avaliacao_item.model_dump(exclude_unset=True)
+        db_avaliacao_item.sqlmodel_update(avaliacao_itens_data)
 
-        session.add(db_avaliacao_produto)
+        session.add(db_avaliacao_item)
         session.commit()
-        session.refresh(db_avaliacao_produto)
+        session.refresh(db_avaliacao_item)
 
-        return db_avaliacao_produto
+        return db_avaliacao_item
 
-@app.delete("/avaliacao_produtos/{avaliacao_produto_id}")
-def delete_avaliacao_produtos(avaliacao_produto_id: int):
+@app.delete("/avaliacao_itens/{avaliacao_item_id}")
+def delete_avaliacao_itens(avaliacao_item_id: int):
     with Session(engine) as session:
-        avaliacao_produto = session.get(AvaliacaoItem, avaliacao_produto_id)
+        avaliacao_item = session.get(AvaliacaoItem, avaliacao_item_id)
 
-        if not avaliacao_produto:
+        if not avaliacao_item:
             raise HTTPException(status_code=404, detail="Avaliacao do Item not found")
         
-        session.delete(avaliacao_produto)
+        session.delete(avaliacao_item)
         session.commit()
 
         return {"ok": True}
