@@ -45,16 +45,16 @@ class AvaliacaoVendedor(SQLModel, table=True):
 
 
 class AvaliacaoItem(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    imagem_url: str
-    video_url: str
-    comentario: str
-    nota: int
-    localizacao: str
-    criado_em: datetime
+  id: int | None = Field(default=None, primary_key=True)
+  imagem_url: str
+  video_url: str
+  comentario: str
+  nota: int
+  localizacao: str
+  criado_em: datetime = Field(default_factory=datetime.utcnow)
 
-    item_id: int | None = Field(default=None, foreign_key="item.id")
-    item: Item | None = Relationship(back_populates="avaliacoes")
+  item_id: int | None = Field(default=None, foreign_key="item.id")
+  item: Item | None = Relationship(back_populates="avaliacoes")
 
 
 class Usuario(Pessoa, table=True):
