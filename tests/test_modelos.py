@@ -1,10 +1,11 @@
 import sys
 from decimal import Decimal
 import datetime
-sys.path.append("./modelos")
 
-from modelos import Item, AvaliacaoItem, Vendedor, AvaliacaoVendedor
-from sqlmodel import Field, Session, SQLModel, create_engine, select
+
+
+from modelos.modelos import Item, AvaliacaoItem, Vendedor, AvaliacaoVendedor, Usuario
+from sqlmodel import Session, SQLModel, create_engine, select
 
 def test_modelo():
     novo_item = Item(descricao = "sorvete", preco= Decimal(2.134))
@@ -79,5 +80,23 @@ def test_avaliacao_vendedor():
   #criado_em: datetime
 
 
+def test_usuario():
+    novo_usuario = Usuario(nome="Gabriel", email="gabriel@example.com", telefone="123456789", pais="Brasil",
+                           cidade="São Paulo", estado="SP")
 
+    engine = create_engine('sqlite://', echo=True)
+    SQLModel.metadata.create_all(engine)
+
+    with Session(engine) as session:
+        session.add(novo_usuario)
+        session.commit()
+
+    with Session(engine) as session:
+        usuario = session.exec(select(Usuario)).one()
+        assert usuario.nome == "Gabriel"
+        assert usuario.email == "gabriel@example.com"
+        assert usuario.telefone == 123456789
+        assert usuario.pais == "Brasil"
+        assert usuario.cidade == "São Paulo"
+        assert usuario.estado == "SP"
 
