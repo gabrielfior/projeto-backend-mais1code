@@ -4,7 +4,7 @@ import datetime
 
 
 
-from modelos.modelos import Item, AvaliacaoItem, Vendedor, AvaliacaoVendedor, Usuario
+from modelos import Item, AvaliacaoItem, Vendedor, AvaliacaoVendedor, Usuario
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 def test_modelo():
