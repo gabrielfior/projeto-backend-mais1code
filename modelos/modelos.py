@@ -69,5 +69,5 @@ class LikesAvaliacaoItem(SQLModel, table=True):
   criado_em: datetime = Field(default_factory=datetime.utcnow)
 
   
-  avaliacaoitem_id: int | None = Field(default=None, foreign_key="AvaliacaoItem.id")
+  avaliacaoitem_id: int | None = Field(default=None, foreign_key="avaliacaoitem.id")
   avaliacaoitem: AvaliacaoItem | None = Relationship(back_populates="likes") 

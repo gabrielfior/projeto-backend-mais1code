@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 
-from modelos.modelos import Item,AvaliacaoItem, Vendedor, AvaliacaoVendedor
+from modelos.modelos import Item,AvaliacaoItem, Vendedor, AvaliacaoVendedor, Usuario, LikesAvaliacaoItem
 from fastapi.middleware.cors import CORSMiddleware
 
 
