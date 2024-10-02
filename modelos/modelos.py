@@ -55,7 +55,19 @@ class AvaliacaoItem(SQLModel, table=True):
 
   item_id: int | None = Field(default=None, foreign_key="item.id")
   item: Item | None = Relationship(back_populates="avaliacoes")
+  likes: list["LikesAvaliacaoItem"] = Relationship(back_populates="avaliacaoitem")
 
 
 class Usuario(Pessoa, table=True):
     id: int | None = Field(default=None, primary_key=True)
+
+#criar tabela-likes-avaliacao-produto
+
+class LikesAvaliacaoItem(SQLModel, table=True):
+  id: int | None = Field(default=None, primary_key=True)
+  avaliacao: bool
+  criado_em: datetime = Field(default_factory=datetime.utcnow)
+
+  
+  avaliacaoitem_id: int | None = Field(default=None, foreign_key="AvaliacaoItem.id")
+  avaliacaoitem: AvaliacaoItem | None = Relationship(back_populates="likes") 
