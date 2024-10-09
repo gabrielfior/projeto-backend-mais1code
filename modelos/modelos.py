@@ -38,7 +38,7 @@ class AvaliacaoVendedor(SQLModel, table=True):
     imagem: str
     comentario: str
     nota: int
-    criado_em: datetime
+    criado_em: datetime = Field(default_factory=datetime.utcnow)
 
     vendedor_id: int | None = Field(default=None, foreign_key="vendedor.id")
     vendedor: Vendedor | None = Relationship(back_populates="avaliacoes")
