@@ -1,12 +1,12 @@
 import uvicorn
-from sqlalchemy.pool import StaticPool
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse
-from sqlmodel import Field, Session, SQLModel, create_engine, select
-
-from modelos.modelos import Item,AvaliacaoItem, Vendedor, AvaliacaoVendedor, Usuario, LikesAvaliacaoItem
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from sqlalchemy.pool import StaticPool
+from sqlmodel import Session, SQLModel, create_engine, select
 
+from modelos.modelos import Item, AvaliacaoItem, LikesAvaliacaoItem, \
+    AvaliacaoItemPublic
 
 connect_args = {"check_same_thread": False}
 engine = create_engine("sqlite:///database.db", echo=True, connect_args=connect_args, poolclass=StaticPool)
@@ -103,7 +103,7 @@ def create_avaliacao_itens(avaliacao_itens: AvaliacaoItem):
 
         return JSONResponse(content=None, status_code=201)
 
-@app.get("/avaliacao_itens/{avaliacao_item_id}", response_model=AvaliacaoItem)
+@app.get("/avaliacao_itens/{avaliacao_item_id}", response_model=AvaliacaoItemPublic)
 def read_avaliacao_itens(avaliacao_item_id: int):
     with Session(engine) as session:
         avaliacao_item = session.get(AvaliacaoItem, avaliacao_item_id)
