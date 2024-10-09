@@ -1,15 +1,15 @@
 import uvicorn
-from sqlalchemy.pool import StaticPool
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse
-from sqlmodel import Field, Session, SQLModel, create_engine, select
-
-from modelos.modelos import Item,AvaliacaoItem, Vendedor, AvaliacaoVendedor, Usuario, LikesAvaliacaoItem
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from sqlalchemy.pool import StaticPool
+from sqlmodel import Session, SQLModel, create_engine, select
 
+from modelos.modelos import Item, AvaliacaoItem, LikesAvaliacaoItem, \
+    AvaliacaoItemPublic
 
 connect_args = {"check_same_thread": False}
-engine = create_engine('sqlite://', echo=True, connect_args=connect_args, poolclass=StaticPool)
+engine = create_engine("sqlite:///database.db", echo=True, connect_args=connect_args, poolclass=StaticPool)
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
@@ -103,7 +103,7 @@ def create_avaliacao_itens(avaliacao_itens: AvaliacaoItem):
 
         return JSONResponse(content=None, status_code=201)
 
-@app.get("/avaliacao_itens/{avaliacao_item_id}")
+@app.get("/avaliacao_itens/{avaliacao_item_id}", response_model=AvaliacaoItemPublic)
 def read_avaliacao_itens(avaliacao_item_id: int):
     with Session(engine) as session:
         avaliacao_item = session.get(AvaliacaoItem, avaliacao_item_id)
@@ -111,6 +111,7 @@ def read_avaliacao_itens(avaliacao_item_id: int):
         if not avaliacao_item:
             raise HTTPException(status_code=404, detail="Avaliacao do Item not found")
         
+        print (avaliacao_item.likes)
         return avaliacao_item
     
 
@@ -143,6 +144,55 @@ def delete_avaliacao_itens(avaliacao_item_id: int):
         session.commit()
 
         return {"ok": True}
+    
+@app.post("/likes_avaliacao_items/")
+def create_likes_avaliacao_items(likes_avaliacao_items: LikesAvaliacaoItem):
+    with Session(engine) as session:
+        session.add(likes_avaliacao_items)
+        session.commit()
+
+        return JSONResponse(content=None, status_code=201)
+
+@app.get("/likes_avaliacao_items/{likes_avaliacao_items_id}")
+def read_likes_avaliacao_items(likes_avaliacao_items_id: int):
+    with Session(engine) as session:
+        likes_avaliacao_items = session.get(Item, likes_avaliacao_items_id)
+
+        if not likes_avaliacao_items:
+            raise HTTPException(status_code=404, detail="Item not found")
+        
+        return likes_avaliacao_items
+
+@app.patch("/likes_avaliacao_items/{likes_avaliacao_items_id}")
+def update_likes_avaliacao_items(likes_avaliacao_items_id: int, likes_avaliacao_items: LikesAvaliacaoItem):
+    with Session(engine) as session:
+        db_likes_avaliacao_items = session.get(LikesAvaliacaoItem, likes_avaliacao_items_id)
+
+        if not db_likes_avaliacao_items:
+            raise HTTPException(status_code=404, detail="Likes not found")
+        
+        likes_avaliacao_items_data = likes_avaliacao_items.model_dump(exclude_unset=True)
+        db_likes_avaliacao_items.sqlmodel_update(likes_avaliacao_items_data)
+
+        session.add(db_likes_avaliacao_items)
+        session.commit()
+        session.refresh(db_likes_avaliacao_items)
+
+        return db_likes_avaliacao_items
+
+@app.delete("/likes_avaliacao_items/{likes_avaliacao_items_id}")
+def delete_likes_avaliacao_items(likes_avaliacao_items_id: int):
+    with Session(engine) as session:
+        likes_avaliacao_items = session.get(LikesAvaliacaoItem, likes_avaliacao_items_id)
+
+        if not likes_avaliacao_items:
+            raise HTTPException(status_code=404, detail="Likes not found")
+        
+        session.delete(likes_avaliacao_items)
+        session.commit()
+
+        return {"ok": True}
+
 
 
 if __name__ == "__main__":

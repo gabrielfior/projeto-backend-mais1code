@@ -38,24 +38,27 @@ class AvaliacaoVendedor(SQLModel, table=True):
     imagem: str
     comentario: str
     nota: int
-    criado_em: datetime
+    criado_em: datetime = Field(default_factory=datetime.utcnow)
 
     vendedor_id: int | None = Field(default=None, foreign_key="vendedor.id")
     vendedor: Vendedor | None = Relationship(back_populates="avaliacoes")
 
+class AvaliacaoItemBase(SQLModel):
+    id: int | None = Field(default=None, primary_key=True)
+    imagem_url: str
+    video_url: str
+    comentario: str
+    nota: int
+    localizacao: str
+    criado_em: datetime = Field(default_factory=datetime.utcnow)
 
-class AvaliacaoItem(SQLModel, table=True):
-  id: int | None = Field(default=None, primary_key=True)
-  imagem_url: str
-  video_url: str
-  comentario: str
-  nota: int
-  localizacao: str
-  criado_em: datetime = Field(default_factory=datetime.utcnow)
+
+class AvaliacaoItem(AvaliacaoItemBase, table=True):
 
   item_id: int | None = Field(default=None, foreign_key="item.id")
   item: Item | None = Relationship(back_populates="avaliacoes")
   likes: list["LikesAvaliacaoItem"] = Relationship(back_populates="avaliacaoitem")
+
 
 
 class Usuario(Pessoa, table=True):
@@ -71,3 +74,6 @@ class LikesAvaliacaoItem(SQLModel, table=True):
   
   avaliacaoitem_id: int | None = Field(default=None, foreign_key="avaliacaoitem.id")
   avaliacaoitem: AvaliacaoItem | None = Relationship(back_populates="likes") 
+
+class AvaliacaoItemPublic(AvaliacaoItemBase):
+    likes: list[LikesAvaliacaoItem] = []
